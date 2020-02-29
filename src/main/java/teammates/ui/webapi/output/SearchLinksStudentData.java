@@ -31,7 +31,7 @@ public class SearchLinksStudentData {
         this.courseJoinLink = courseJoinLink;
         this.recordsPageLink = recordsPageLink;
     }
-    
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -45,7 +45,7 @@ public class SearchLinksStudentData {
     }
 
     public void setCourseJoinLink(String courseJoinLink) {
-        this. courseJoinLink = courseJoinLink;
+        this.courseJoinLink = courseJoinLink;
     }
 
     public void setRecordsPageLink(String recordsPageLink) {
@@ -68,7 +68,7 @@ public class SearchLinksStudentData {
         return courseJoinLink;
     }
 
-    public String  getRecordsPageLink() {
+    public String getRecordsPageLink() {
         return recordsPageLink;
     }
 }

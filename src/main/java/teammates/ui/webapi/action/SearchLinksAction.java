@@ -19,7 +19,7 @@ import teammates.ui.webapi.output.SearchLinksInstructorData;
 import teammates.ui.webapi.output.SearchLinksStudentData;
 
 /**
- * Searches for Links
+ * Searches for Links.
  */
 public class SearchLinksAction extends Action {
 
@@ -45,7 +45,6 @@ public class SearchLinksAction extends Action {
         String searchKey = getNonNullRequestParamValue(Const.ParamsNames.ADMIN_SEARCH_KEY);
         List<StudentAttributes> students = logic.searchStudentsInWholeSystem(searchKey).studentList;
         List<InstructorAttributes> instructors = logic.searchInstructorsInWholeSystem(searchKey).instructorList;
-
 
         populateCourseIds(students, instructors);
         populateCourseIdToInstituteMap();
@@ -112,11 +111,11 @@ public class SearchLinksAction extends Action {
     private List<SearchLinksStudentData> getStudentsBundle(List<StudentAttributes> students) {
         List<SearchLinksStudentData> studentsBundle = new ArrayList<>();
 
-        for (StudentAttributes student: students) {
+        for (StudentAttributes student : students) {
             SearchLinksStudentData studentData = new SearchLinksStudentData();
 
             if (student.email != null && student.course != null
-                && !StringHelper.isEmpty(courseIdToInstructorGoogleIdMap.get(student.course))) {
+                    && !StringHelper.isEmpty(courseIdToInstructorGoogleIdMap.get(student.course))) {
 
                 studentData.setRecordsPageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
                         .withCourseId(student.course)
@@ -147,7 +146,7 @@ public class SearchLinksAction extends Action {
     private List<SearchLinksInstructorData> getInstructorsBundle(List<InstructorAttributes> instructors) {
         List<SearchLinksInstructorData> instructorsBundle = new ArrayList<>();
 
-        for (InstructorAttributes instructor: instructors) {
+        for (InstructorAttributes instructor : instructors) {
             SearchLinksInstructorData instructorData = new SearchLinksInstructorData();
 
             if (instructor.email != null) {
@@ -162,7 +161,7 @@ public class SearchLinksAction extends Action {
                         .withRegistrationKey(StringHelper.encrypt(instructor.key))
                         .withParam(Const.ParamsNames.ENTITY_TYPE, Const.EntityType.INSTRUCTOR)
                         .toAbsoluteString());
-                // Only add to the response if the email exists, as otherwise the join key on the frontend is missing 
+                // Only add to the response if the email exists, as otherwise the join key on the frontend is missing
                 instructorsBundle.add(instructorData);
             }
         }

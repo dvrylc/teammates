@@ -3,13 +3,12 @@ package teammates.test.cases.webapi;
 import org.junit.Test;
 
 import teammates.common.datatransfer.DataBundle;
-import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
+import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.util.Const;
 import teammates.ui.webapi.action.JsonResult;
 import teammates.ui.webapi.action.SearchLinksAction;
 import teammates.ui.webapi.output.SearchLinksData;
-
 
 /**
  * SUT:{@link SearchLinksAction}.
@@ -34,7 +33,7 @@ public class SearchLinksActionTest extends BaseActionTest<SearchLinksAction> {
     protected String getRequestMethod() {
         return GET;
     }
-    
+
     @Override
     protected void testExecute() {
         // TODO: Remove
