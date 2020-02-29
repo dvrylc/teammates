@@ -4,14 +4,14 @@ package teammates.ui.webapi.output;
  * Contains the links for an instructor.
  */
 public class SearchLinksInstructorData {
-    private String googleId;
+    private String email;
     private String manageAccountLink;
     private String homePageLink;
     private String courseJoinLink;
     private String recordsPageLink;
 
     public SearchLinksInstructorData() {
-        this.googleId = null;
+        this.email = null;
         this.manageAccountLink = null;
         this.homePageLink = null;
         this.courseJoinLink = null;
@@ -19,21 +19,21 @@ public class SearchLinksInstructorData {
     }
 
     public SearchLinksInstructorData(
-            String googleId,
+            String email,
             String manageAccountLink,
             String homePageLink,
             String courseJoinLink,
             String recordsPageLink
     ) {
-        this.googleId = googleId;
+        this.email = email;
         this.manageAccountLink = manageAccountLink;
         this.homePageLink = homePageLink;
         this.courseJoinLink = courseJoinLink;
         this.recordsPageLink = recordsPageLink;
     }
 
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setManageAccountLink(String manageAccountLink) {
@@ -52,8 +52,8 @@ public class SearchLinksInstructorData {
         this.recordsPageLink = recordsPageLink;
     }
 
-    public String getGoogleId() {
-        return googleId;
+    public String getEmail() {
+        return email;
     }
 
     public String getManageAccountLink() {

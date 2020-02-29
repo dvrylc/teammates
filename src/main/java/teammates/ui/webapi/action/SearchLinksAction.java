@@ -115,17 +115,6 @@ public class SearchLinksAction extends Action {
         for (StudentAttributes student: students) {
             SearchLinksStudentData studentData = new SearchLinksStudentData();
 
-            if (student.googleId != null) {
-                studentData.setGoogleId(student.getGoogleId());
-                studentData.setManageAccountLink(Config.getFrontEndAppUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
-                        .withInstructorId(student.googleId).toString());
-                studentData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
-                            .withCourseId(student.course)
-                            .withStudentEmail(student.email)
-                            .withUserId(courseIdToInstructorGoogleIdMap.get(student.course))
-                            .toAbsoluteString());
-            }
-
             if (student.email != null && student.course != null
                 && !StringHelper.isEmpty(courseIdToInstructorGoogleIdMap.get(student.course))) {
 
@@ -136,8 +125,20 @@ public class SearchLinksAction extends Action {
                         .toAbsoluteString());
             }
 
-            studentData.setCourseJoinLink(Config.getFrontEndAppUrl(student.getRegistrationUrl()).toAbsoluteString());
-            studentsBundle.add(studentData);
+            if (student.email != null) {
+                studentData.setEmail(student.email);
+                studentData.setManageAccountLink(Config.getFrontEndAppUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
+                        .withInstructorId(student.googleId).toString());
+                studentData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
+                            .withCourseId(student.course)
+                            .withStudentEmail(student.email)
+                            .withUserId(courseIdToInstructorGoogleIdMap.get(student.course))
+                            .toAbsoluteString());
+                studentData.setCourseJoinLink(Config.getFrontEndAppUrl(student.getRegistrationUrl()).toAbsoluteString());
+                // Only add to the response if email exists, as otherwise the join key on the frontend is missing
+                studentsBundle.add(studentData);
+            }
+
         }
 
         return studentsBundle;
@@ -149,21 +150,21 @@ public class SearchLinksAction extends Action {
         for (InstructorAttributes instructor: instructors) {
             SearchLinksInstructorData instructorData = new SearchLinksInstructorData();
 
-            if (instructor.googleId != null) {
-                instructorData.setGoogleId(instructor.googleId);
+            if (instructor.email != null) {
+                instructorData.setEmail(instructor.email);
                 instructorData.setManageAccountLink(Config.getFrontEndAppUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
                         .withInstructorId(instructor.googleId)
                         .toString());
                 instructorData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_HOME_PAGE)
                         .withUserId(instructor.googleId)
                         .toAbsoluteString());
-
+                instructorData.setCourseJoinLink(Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
+                        .withRegistrationKey(StringHelper.encrypt(instructor.key))
+                        .withParam(Const.ParamsNames.ENTITY_TYPE, Const.EntityType.INSTRUCTOR)
+                        .toAbsoluteString());
+                // Only add to the response if the email exists, as otherwise the join key on the frontend is missing 
+                instructorsBundle.add(instructorData);
             }
-            instructorData.setCourseJoinLink(Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
-                    .withRegistrationKey(StringHelper.encrypt(instructor.key))
-                    .withParam(Const.ParamsNames.ENTITY_TYPE, Const.EntityType.INSTRUCTOR)
-                    .toAbsoluteString());
-            instructorsBundle.add(instructorData);
         }
 
         return instructorsBundle;
