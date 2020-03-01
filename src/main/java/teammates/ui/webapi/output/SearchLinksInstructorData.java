@@ -4,6 +4,7 @@ package teammates.ui.webapi.output;
  * Contains the links for an instructor.
  */
 public class SearchLinksInstructorData {
+    protected boolean showLinks;
     private String email;
     private String manageAccountLink;
     private String homePageLink;
