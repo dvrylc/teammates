@@ -1,5 +1,8 @@
 package teammates.ui.webapi.output;
 
+/**
+ * SearchCourse data for both instructors and students.
+ */
 public class SearchCoursesCommonData extends ApiOutput {
     private String email;
     private String courseId;
@@ -13,7 +16,7 @@ public class SearchCoursesCommonData extends ApiOutput {
     public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
-    
+
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
@@ -23,18 +26,18 @@ public class SearchCoursesCommonData extends ApiOutput {
     }
 
     public String getEmail() {
-      return email;
+        return email;
     }
 
     public String getCourseId() {
-      return courseId;
+        return courseId;
     }
 
     public String getCourseName() {
-      return courseName;
+        return courseName;
     }
 
     public String getInstitute() {
-      return institute;
+        return institute;
     }
 }

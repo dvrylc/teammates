@@ -1,22 +1,22 @@
 package teammates.ui.webapi.action;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import teammates.common.exception.UnauthorizedAccessException;
 import teammates.common.datatransfer.attributes.AccountAttributes;
 import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
-import teammates.common.util.StringHelper;
-import teammates.ui.webapi.output.SearchCoursesData;
-import teammates.ui.webapi.output.SearchCoursesCommonData;
-
+import teammates.common.exception.UnauthorizedAccessException;
 import teammates.common.util.Const;
+import teammates.common.util.StringHelper;
+import teammates.ui.webapi.output.SearchCoursesCommonData;
+import teammates.ui.webapi.output.SearchCoursesData;
+
 /**
  * Searches Courses.
  */
