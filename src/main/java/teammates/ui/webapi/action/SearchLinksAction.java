@@ -112,6 +112,10 @@ public class SearchLinksAction extends Action {
         List<SearchLinksStudentData> studentsBundle = new ArrayList<>();
 
         for (StudentAttributes student : students) {
+            if (student.email == null) {
+                continue;
+            }
+
             SearchLinksStudentData studentData = new SearchLinksStudentData();
 
             if (student.email != null && student.course != null
@@ -124,20 +128,18 @@ public class SearchLinksAction extends Action {
                         .toAbsoluteString());
             }
 
-            if (student.email != null) {
-                studentData.setEmail(student.email);
+            if (student.googleId != null) {
                 studentData.setManageAccountLink(Config.getFrontEndAppUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
-                        .withInstructorId(student.googleId).toString());
-                studentData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
-                            .withCourseId(student.course)
-                            .withStudentEmail(student.email)
-                            .withUserId(courseIdToInstructorGoogleIdMap.get(student.course))
-                            .toAbsoluteString());
-                studentData.setCourseJoinLink(Config.getFrontEndAppUrl(student.getRegistrationUrl()).toAbsoluteString());
-                // Only add to the response if email exists, as otherwise the join key on the frontend is missing
-                studentsBundle.add(studentData);
+                        .withInstructorId(student.googleId)
+                        .toString());
+                studentData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.STUDENT_HOME_PAGE)
+                        .withUserId(student.getGoogleId())
+                        .toString());
             }
 
+            studentData.setEmail(student.email);
+            studentData.setCourseJoinLink(Config.getFrontEndAppUrl(student.getRegistrationUrl()).toAbsoluteString());
+            studentsBundle.add(studentData);
         }
 
         return studentsBundle;
@@ -147,23 +149,24 @@ public class SearchLinksAction extends Action {
         List<SearchLinksInstructorData> instructorsBundle = new ArrayList<>();
 
         for (InstructorAttributes instructor : instructors) {
+            if (instructor.email == null) {
+                continue;
+            }
+
             SearchLinksInstructorData instructorData = new SearchLinksInstructorData();
 
-            if (instructor.email != null) {
-                instructorData.setEmail(instructor.email);
-                instructorData.setManageAccountLink(Config.getFrontEndAppUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
-                        .withInstructorId(instructor.googleId)
-                        .toString());
-                instructorData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_HOME_PAGE)
-                        .withUserId(instructor.googleId)
-                        .toAbsoluteString());
-                instructorData.setCourseJoinLink(Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
-                        .withRegistrationKey(StringHelper.encrypt(instructor.key))
-                        .withParam(Const.ParamsNames.ENTITY_TYPE, Const.EntityType.INSTRUCTOR)
-                        .toAbsoluteString());
-                // Only add to the response if the email exists, as otherwise the join key on the frontend is missing
-                instructorsBundle.add(instructorData);
-            }
+            instructorData.setEmail(instructor.email);
+            instructorData.setManageAccountLink(Config.getFrontEndAppUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
+                    .withInstructorId(instructor.googleId)
+                    .toString());
+            instructorData.setHomePageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_HOME_PAGE)
+                    .withUserId(instructor.googleId)
+                    .toAbsoluteString());
+            instructorData.setCourseJoinLink(Config.getFrontEndAppUrl(Const.WebPageURIs.JOIN_PAGE)
+                    .withRegistrationKey(StringHelper.encrypt(instructor.key))
+                    .withParam(Const.ParamsNames.ENTITY_TYPE, Const.EntityType.INSTRUCTOR)
+                    .toAbsoluteString());
+            instructorsBundle.add(instructorData);
         }
 
         return instructorsBundle;
