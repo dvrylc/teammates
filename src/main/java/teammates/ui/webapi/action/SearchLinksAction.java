@@ -118,7 +118,7 @@ public class SearchLinksAction extends Action {
 
             SearchLinksStudentData studentData = new SearchLinksStudentData();
 
-            if (student.email != null && student.course != null
+            if (student.course != null
                     && !StringHelper.isEmpty(courseIdToInstructorGoogleIdMap.get(student.course))) {
 
                 studentData.setRecordsPageLink(Config.getFrontEndAppUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
