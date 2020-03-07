@@ -33,7 +33,7 @@ export class SearchService {
         this.getSessions(searchKey),
         this.getLinks(searchKey),
         this.getCourses(searchKey),
-    ).pipe(map(this.joinAdmin));
+    ).pipe(map((res: [Instructors, Students, SearchSessions, SearchLinks, SearchCourses]) => this.joinAdmin(res)));
   }
 
   private getStudents(searchKey: string): Observable<Students> {
@@ -80,11 +80,9 @@ export class SearchService {
     };
   }
 
-  /**
-   * JoinAdmin defaults to using the email as the join key.
-   */
   private joinAdminStudents(
-    resp: [Students, SearchSessions, SearchLinks, SearchCourses]): StudentAccountSearchResult[] {
+    resp: [Students, SearchSessions, SearchLinks, SearchCourses],
+  ): StudentAccountSearchResult[] {
     const [students, sessions, links, courses]
       : [Students, SearchSessions, SearchLinks, SearchCourses] = resp;
     const studentsData: StudentAccountSearchResult[] = [];
