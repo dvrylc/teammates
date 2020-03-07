@@ -1,7 +1,19 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Instructors, SearchSessions, Students, StudentSessions } from '../types/api-output';
+import {
+  Instructor,
+  Instructors,
+  SearchCourses,
+  SearchCoursesCommon,
+  SearchLinks,
+  SearchLinksInstructor,
+  SearchLinksStudent,
+  SearchSessions,
+  Student,
+  Students,
+  StudentSessions,
+} from '../types/api-output';
 import { HttpRequestService } from './http-request.service';
 
 /**
@@ -59,9 +71,9 @@ export class SearchService {
     return this.httpRequestService.get('/search/courses', paramMap);
   }
 
-  private joinAdmin(resp: [Instructors, Students, SearchSessions, SearchLinks, SearchCourses ]): AdminSearchResult {
-    const [instructors, students, sessions, links, courses]
-      : Array<Instructors | Students | SearchSessions | SearchLinks | SearchCourses> = resp;
+  private joinAdmin(resp: [Instructors, Students, SearchSessions, SearchLinks, SearchCourses]): AdminSearchResult {
+    const [instructors, students, sessions, links, courses]:
+      [Instructors, Students, SearchSessions, SearchLinks, SearchCourses] = resp;
     return {
       students: this.joinAdminStudents([students, sessions, links, courses]),
       instructors: this.joinAdminInstructors([instructors, links, courses]),
@@ -72,10 +84,9 @@ export class SearchService {
    * JoinAdmin defaults to using the email as the join key.
    */
   private joinAdminStudents(
-    resp: [Students, SearchSessions, SearchLinks, SearchCourses ]
-  ): StudentAccountSearchResult[] {
+    resp: [Students, SearchSessions, SearchLinks, SearchCourses]): StudentAccountSearchResult[] {
     const [students, sessions, links, courses]
-      : Array<Students | SearchSessions | SearchLinks | SearchCourses>= resp;
+      : [Students, SearchSessions, SearchLinks, SearchCourses] = resp;
     const studentsData: StudentAccountSearchResult[] = [];
     for (const student of students.students) {
       let studentResult: StudentAccountSearchResult = {
@@ -97,27 +108,29 @@ export class SearchService {
         googleId: '',
         showLinks: false,
       };
-      const { email, name, comments, teamName: team, sectionName: section, googleId } = student;
+      const { email, name, comments, teamName: team, sectionName: section, googleId = '' }: Student = student;
       studentResult = { ...studentResult, email, name, comments, team, section, googleId };
 
       // Join sessions
       const matchingSessions: StudentSessions = sessions.sessions[email];
       if (matchingSessions != null) {
-        const { openSessions, closedSessions, publishedSessions } = matchingSessions;
+        const { openSessions, closedSessions, publishedSessions }: StudentSessions = matchingSessions;
         studentResult = { ...studentResult, openSessions, closedSessions, publishedSessions };
       }
 
       // Join courses
-      const matchingCourses = courses.students.filter(el => el.email === email);
+      const matchingCourses: SearchCoursesCommon[] =
+        courses.students.filter((el: SearchCoursesCommon) => el.email === email);
       if (matchingCourses.length !== 0) {
-        const { courseId, courseName, institute } = matchingCourses[0];
+        const { courseId, courseName, institute }: SearchCoursesCommon = matchingCourses[0];
         studentResult = { ...studentResult, courseId, courseName, institute };
       }
 
       // Join links
-      const matchingLinks = links.students.filter(el => el.email === email);
+      const matchingLinks: SearchLinksStudent[] = links.students.filter((el: SearchLinksStudent) => el.email === email);
       if (matchingLinks.length !== 0) {
-        const { courseJoinLink, manageAccountLink, recordsPageLink, homePageLink } = matchingLinks[0];
+        const { courseJoinLink, manageAccountLink, recordsPageLink, homePageLink }: SearchLinksStudent
+          = matchingLinks[0];
         studentResult = { ...studentResult, courseJoinLink, manageAccountLink, recordsPageLink, homePageLink };
       }
 
@@ -128,7 +141,7 @@ export class SearchService {
   }
 
   private joinAdminInstructors(resp: [Instructors, SearchLinks, SearchCourses ]): InstructorAccountSearchResult[] {
-    const [instructors, links, courses] = resp;
+    const [instructors, links, courses]: [Instructors, SearchLinks, SearchCourses] = resp;
     const instructorsData: InstructorAccountSearchResult[] = [];
     for (const instructor of instructors.instructors) {
       let instructorResult: InstructorAccountSearchResult = {
@@ -143,20 +156,22 @@ export class SearchService {
         googleId: '',
         showLinks: false,
       };
-      const { email, name, googleId } = instructor;
+      const { email, name, googleId }: Instructor = instructor;
       instructorResult = { ...instructorResult, email, name, googleId };
 
       // Join courses
-      const matchingCourses = courses.instructors.filter(el => el.email === email);
+      const matchingCourses: SearchCoursesCommon[]
+        = courses.instructors.filter((el: SearchCoursesCommon) => el.email === email);
       if (matchingCourses.length !== 0) {
-        const { courseId, courseName, institute } = matchingCourses[0];
+        const { courseId, courseName, institute }: SearchCoursesCommon = matchingCourses[0];
         instructorResult = { ...instructorResult, courseId, courseName, institute };
       }
 
       // Join links
-      const matchingLinks = links.instructors.filter(el => el.email === email);
+      const matchingLinks: SearchLinksInstructor[]
+        = links.instructors.filter((el: SearchLinksInstructor) => el.email === email);
       if (matchingLinks.length !== 0) {
-        const { courseJoinLink, manageAccountLink, homePageLink } = matchingLinks[0];
+        const { courseJoinLink, manageAccountLink, homePageLink }: SearchLinksInstructor = matchingLinks[0];
         instructorResult = { ...instructorResult, courseJoinLink, manageAccountLink, homePageLink };
       }
 
@@ -175,26 +190,7 @@ export interface AdminSearchResult {
   instructors: InstructorAccountSearchResult[];
 }
 
-/**
- * Search results for students from the Admin endpoint.
- */
-export interface StudentAccountSearchResult extends CommonAccountSearchResult {
-  section: string;
-  team: string;
-  comments: string;
-  recordsPageLink: string;
-  openSessions: { [index: string]: string };
-  closedSessions: { [index: string]: string };
-  publishedSessions: { [index: string]: string };
-}
-
-/**
- * Search results for instructors from the Admin endpoint.
- */
-export interface InstructorAccountSearchResult extends CommonAccountSearchResult {
-}
-
-interface CommonAccountSearchResult {
+interface InstructorAccountSearchResult {
   name: string;
   email: string;
   googleId: string;
@@ -207,37 +203,15 @@ interface CommonAccountSearchResult {
   showLinks: boolean;
 }
 
-// TODO: Delete once the PRs are merged
-interface SearchCourses {
-  students: SearchCoursesCommon[];
-  instructors: SearchCoursesCommon[];
-}
-
-interface SearchCoursesCommon {
-  email: string;
-  courseId: string;
-  courseName: string;
-  institute: string;
-}
-
-interface SearchLinksInstructor {
-  showLinks: boolean;
-  email: string;
-  manageAccountLink: string;
-  homePageLink: string;
-  courseJoinLink: string;
-}
-
-interface SearchLinksStudent {
-  showLinks: boolean;
-  email: string;
-  manageAccountLink: string;
-  homePageLink: string;
-  courseJoinLink: string;
+/**
+ * Search results for students from the Admin endpoint.
+ */
+export interface StudentAccountSearchResult extends InstructorAccountSearchResult {
+  section: string;
+  team: string;
+  comments: string;
   recordsPageLink: string;
-}
-
-interface SearchLinks {
-  students: SearchLinksStudent[];
-  instructors: SearchLinksInstructor[];
+  openSessions: { [index: string]: string };
+  closedSessions: { [index: string]: string };
+  publishedSessions: { [index: string]: string };
 }
