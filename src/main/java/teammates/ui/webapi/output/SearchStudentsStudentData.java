@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import teammates.common.datatransfer.attributes.StudentAttributes;
 
 /**
- * Contains attributes for the Students search respoonse object.
+ * Contains attributes for the Students search response object.
  */
 public class SearchStudentsStudentData extends CommonSearchUserData {
     private final String team;

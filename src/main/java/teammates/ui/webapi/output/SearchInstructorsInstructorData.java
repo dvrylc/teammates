@@ -3,7 +3,7 @@ package teammates.ui.webapi.output;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 
 /**
- * Contains attributes for the Instructors search respoonse object.
+ * Contains attributes for the Instructors search response object.
  */
 public class SearchInstructorsInstructorData extends CommonSearchUserData {
     public SearchInstructorsInstructorData(InstructorAttributes instructorAttributes) {
