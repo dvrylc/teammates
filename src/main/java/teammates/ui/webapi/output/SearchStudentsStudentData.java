@@ -10,16 +10,18 @@ import teammates.common.datatransfer.attributes.StudentAttributes;
 public class SearchStudentsStudentData extends CommonSearchUserData {
     private final String team;
     private final String section;
+    private final JoinState joinState;
 
     @Nullable
     private final String comments;
 
     public SearchStudentsStudentData(StudentAttributes studentAttributes) {
         super(studentAttributes.getName(), studentAttributes.getEmail(), studentAttributes.getCourse(),
-                studentAttributes.getGoogleId(), studentAttributes.isRegistered());
+                studentAttributes.getGoogleId());
         this.comments = studentAttributes.getComments();
         this.team = studentAttributes.getTeam();
         this.section = studentAttributes.getSection();
+        this.joinState = studentAttributes.isRegistered() ? JoinState.JOINED : JoinState.NOT_JOINED;
     }
 
     public String getComments() {
@@ -32,5 +34,9 @@ public class SearchStudentsStudentData extends CommonSearchUserData {
 
     public String getSection() {
         return section;
+    }
+
+    public JoinState getJoinState() {
+        return joinState;
     }
 }
