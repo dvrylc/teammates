@@ -8,6 +8,6 @@ import teammates.common.datatransfer.attributes.InstructorAttributes;
 public class SearchInstructorsInstructorData extends CommonSearchUserData {
     public SearchInstructorsInstructorData(InstructorAttributes instructorAttributes) {
         super(instructorAttributes.getName(), instructorAttributes.getEmail(), instructorAttributes.getCourseId(),
-                instructorAttributes.getGoogleId());
+                instructorAttributes.getGoogleId(), instructorAttributes.isRegistered());
     }
 }
