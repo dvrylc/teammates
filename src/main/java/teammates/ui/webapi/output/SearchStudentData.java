@@ -7,14 +7,14 @@ import teammates.common.datatransfer.attributes.StudentAttributes;
 /**
  * Contains attributes for the Students search response object.
  */
-public class SearchStudentsStudentData extends CommonSearchUserData {
+public class SearchStudentData extends CommonSearchUserData {
     private final String team;
     private final String section;
 
     @Nullable
     private final String comments;
 
-    public SearchStudentsStudentData(StudentAttributes studentAttributes) {
+    public SearchStudentData(StudentAttributes studentAttributes) {
         super(studentAttributes.getName(), studentAttributes.getEmail(), studentAttributes.getCourse(),
                 studentAttributes.getGoogleId(), studentAttributes.isRegistered());
         this.comments = studentAttributes.getComments();
