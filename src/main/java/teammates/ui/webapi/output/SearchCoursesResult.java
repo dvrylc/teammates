@@ -3,7 +3,7 @@ package teammates.ui.webapi.output;
 import java.util.List;
 
 /**
- * Contains Course search results.
+ * Data when searching for courses.
  */
 public class SearchCoursesResult extends ApiOutput {
     private List<SearchCourseData> students;
