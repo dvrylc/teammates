@@ -13,8 +13,8 @@ import teammates.common.exception.UnauthorizedAccessException;
 import teammates.common.util.Config;
 import teammates.common.util.Const;
 import teammates.common.util.StringHelper;
-import teammates.ui.webapi.output.SearchSessionData;
 import teammates.ui.webapi.output.SearchSessionsResult;
+import teammates.ui.webapi.output.SearchSessionData;
 
 /**
  * Searches for sessions.
