@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Output format for a student's session data.
  */
-public class StudentSessionsData extends ApiOutput {
+public class SearchSessionData extends ApiOutput {
     private final Map<String, String> openSessions = new HashMap<>();
     private final Map<String, String> closedSessions = new HashMap<>();
     private final Map<String, String> publishedSessions = new HashMap<>();
