@@ -3,7 +3,7 @@ package teammates.ui.webapi.output;
 /**
  * SearchCourse data for both instructors and students.
  */
-public class SearchCoursesCommonData extends ApiOutput {
+public class SearchCourseData extends ApiOutput {
     private String email;
     private String courseId;
     private String courseName;
