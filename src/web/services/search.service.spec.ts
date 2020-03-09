@@ -1,17 +1,32 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MatSnackBarModule } from '@angular/material';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpRequestService } from './http-request.service';
 import { SearchService } from './search.service';
 
 describe('SearchService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      MatSnackBarModule,
-    ],
-  }));
+  let spyHttpRequestService: any;
+  let service: SearchService;
+
+  beforeEach(() => {
+    spyHttpRequestService = {
+      get: jest.fn(),
+      post: jest.fn(),
+      put: jest.fn(),
+      delete: jest.fn(),
+    };
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        { provide: HttpRequestService, useValue: spyHttpRequestService },
+      ],
+    });
+    service = TestBed.get(SearchService);
+  });
 
   it('should be created', () => {
-    const service: SearchService = TestBed.get(SearchService);
     expect(service).toBeTruthy();
   });
 });
