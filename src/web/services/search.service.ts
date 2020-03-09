@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
-  Instructor,
-  Instructors,
-  SearchCourses,
-  SearchCoursesCommon,
-  SearchLinks,
+  JoinState,
+  SearchCourse,
+  SearchCoursesResult,
+  SearchInstructorsResult,
   SearchLinksInstructor,
+  SearchLinksResult,
   SearchLinksStudent,
-  SearchSessions,
-  Student,
-  Students,
-  StudentSessions,
+  SearchSession,
+  SearchSessionsResult,
+  SearchStudentsResult,
 } from '../types/api-output';
 import { HttpRequestService } from './http-request.service';
 
@@ -33,47 +32,67 @@ export class SearchService {
         this.getSessions(searchKey),
         this.getLinks(searchKey),
         this.getCourses(searchKey),
-    ).pipe(map((res: [Instructors, Students, SearchSessions, SearchLinks, SearchCourses]) => this.joinAdmin(res)));
+    ).pipe(map((res: [
+      SearchInstructorsResult,
+      SearchStudentsResult,
+      SearchSessionsResult,
+      SearchLinksResult,
+      SearchCoursesResult
+    ]) => this.joinAdmin(res)));
   }
 
-  private getStudents(searchKey: string): Observable<Students> {
+  private getStudents(searchKey: string): Observable<SearchStudentsResult> {
     const paramMap: { [key: string]: string } = {
       searchkey: searchKey,
     };
     return this.httpRequestService.get('/search/students', paramMap);
   }
 
-  private getInstructors(searchKey: string): Observable<Instructors> {
+  private getInstructors(searchKey: string): Observable<SearchInstructorsResult> {
     const paramMap: { [key: string]: string } = {
       searchkey: searchKey,
     };
     return this.httpRequestService.get('/search/instructors', paramMap);
   }
 
-  private getSessions(searchKey: string): Observable<SearchSessions> {
+  private getSessions(searchKey: string): Observable<SearchSessionsResult> {
     const paramMap: { [key: string]: string } = {
       searchkey: searchKey,
     };
     return this.httpRequestService.get('/search/sessions', paramMap);
   }
 
-  private getLinks(searchKey: string): Observable<SearchLinks> {
+  private getLinks(searchKey: string): Observable<SearchLinksResult> {
     const paramMap: { [key: string]: string } = {
       searchkey: searchKey,
     };
     return this.httpRequestService.get('/search/links', paramMap);
   }
 
-  private getCourses(searchKey: string): Observable<SearchCourses> {
+  private getCourses(searchKey: string): Observable<SearchCoursesResult> {
     const paramMap: { [key: string]: string } = {
       searchkey: searchKey,
     };
     return this.httpRequestService.get('/search/courses', paramMap);
   }
 
-  private joinAdmin(resp: [Instructors, Students, SearchSessions, SearchLinks, SearchCourses]): AdminSearchResult {
+  private joinAdmin(
+    resp: [
+      SearchInstructorsResult,
+      SearchStudentsResult,
+      SearchSessionsResult,
+      SearchLinksResult,
+      SearchCoursesResult
+    ],
+  ): AdminSearchResult {
     const [instructors, students, sessions, links, courses]:
-      [Instructors, Students, SearchSessions, SearchLinks, SearchCourses] = resp;
+      [
+        SearchInstructorsResult,
+        SearchStudentsResult,
+        SearchSessionsResult,
+        SearchLinksResult,
+        SearchCoursesResult
+      ] = resp;
     return {
       students: this.joinAdminStudents([students, sessions, links, courses]),
       instructors: this.joinAdminInstructors([instructors, links, courses]),
@@ -81,10 +100,15 @@ export class SearchService {
   }
 
   private joinAdminStudents(
-    resp: [Students, SearchSessions, SearchLinks, SearchCourses],
+    resp: [
+      SearchStudentsResult,
+      SearchSessionsResult,
+      SearchLinksResult,
+      SearchCoursesResult
+    ],
   ): StudentAccountSearchResult[] {
     const [students, sessions, links, courses]
-      : [Students, SearchSessions, SearchLinks, SearchCourses] = resp;
+      : [SearchStudentsResult, SearchSessionsResult, SearchLinksResult, SearchCoursesResult] = resp;
     const studentsData: StudentAccountSearchResult[] = [];
     for (const student of students.students) {
       let studentResult: StudentAccountSearchResult = {
@@ -94,7 +118,7 @@ export class SearchService {
         team: '',
         section: '',
         openSessions: {},
-        closedSessions: {},
+        notOpenSessions: {},
         publishedSessions: {},
         courseId: '',
         courseName: '',
@@ -105,25 +129,26 @@ export class SearchService {
         courseJoinLink: '',
         googleId: '',
         showLinks: false,
+        joinState: JoinState.NOT_JOINED,
       };
-      const { email, name, comments, teamName: team, sectionName: section, googleId = '' }: Student = student;
-      studentResult = { ...studentResult, email, name, comments, team, section, googleId };
+      studentResult = { ...studentResult, ...student };
 
       // Join sessions
-      const matchingSessions: StudentSessions = sessions.sessions[email];
+      const matchingSessions: SearchSession = sessions.sessions[student.email];
       if (matchingSessions != null) {
         studentResult = { ...studentResult, ...matchingSessions };
       }
 
       // Join courses
-      const matchingCourses: SearchCoursesCommon[] =
-        courses.students.filter((el: SearchCoursesCommon) => el.email === email);
+      const matchingCourses: SearchCourse[] =
+        courses.students.filter((el: SearchCourse) => el.email === student.email);
       if (matchingCourses.length !== 0) {
         studentResult = { ...studentResult, ...matchingCourses[0] };
       }
 
       // Join links
-      const matchingLinks: SearchLinksStudent[] = links.students.filter((el: SearchLinksStudent) => el.email === email);
+      const matchingLinks: SearchLinksStudent[] = links.students
+        .filter((el: SearchLinksStudent) => el.email === student.email);
       if (matchingLinks.length !== 0) {
         studentResult = { ...studentResult, ...matchingLinks[0] };
       }
@@ -134,8 +159,15 @@ export class SearchService {
     return studentsData;
   }
 
-  private joinAdminInstructors(resp: [Instructors, SearchLinks, SearchCourses ]): InstructorAccountSearchResult[] {
-    const [instructors, links, courses]: [Instructors, SearchLinks, SearchCourses] = resp;
+  private joinAdminInstructors(
+    resp: [
+      SearchInstructorsResult,
+      SearchLinksResult,
+      SearchCoursesResult,
+    ],
+  ): InstructorAccountSearchResult[] {
+    const [instructors, links, courses]:
+      [SearchInstructorsResult, SearchLinksResult, SearchCoursesResult] = resp;
     const instructorsData: InstructorAccountSearchResult[] = [];
     for (const instructor of instructors.instructors) {
       let instructorResult: InstructorAccountSearchResult = {
@@ -149,20 +181,20 @@ export class SearchService {
         courseJoinLink: '',
         googleId: '',
         showLinks: false,
+        joinState: JoinState.NOT_JOINED,
       };
-      const { email, name, googleId }: Instructor = instructor;
-      instructorResult = { ...instructorResult, email, name, googleId };
+      instructorResult = { ...instructorResult, ...instructor };
 
       // Join courses
-      const matchingCourses: SearchCoursesCommon[]
-        = courses.instructors.filter((el: SearchCoursesCommon) => el.email === email);
+      const matchingCourses: SearchCourse[]
+        = courses.instructors.filter((el: SearchCourse) => el.email === instructor.email);
       if (matchingCourses.length !== 0) {
         instructorResult = { ...instructorResult, ...matchingCourses[0] };
       }
 
       // Join links
       const matchingLinks: SearchLinksInstructor[]
-        = links.instructors.filter((el: SearchLinksInstructor) => el.email === email);
+        = links.instructors.filter((el: SearchLinksInstructor) => el.email === instructor.email);
       if (matchingLinks.length !== 0) {
         instructorResult = { ...instructorResult, ...matchingLinks[0] };
       }
@@ -175,14 +207,17 @@ export class SearchService {
 }
 
 /**
- * Search results for the Admin endpoint.
+ * The typings of the response objects returned by the search service.
  */
 export interface AdminSearchResult {
   students: StudentAccountSearchResult[];
   instructors: InstructorAccountSearchResult[];
 }
 
-interface InstructorAccountSearchResult {
+/**
+ * The typings for the instructor account search result.
+ */
+export interface InstructorAccountSearchResult {
   name: string;
   email: string;
   googleId: string;
@@ -193,10 +228,11 @@ interface InstructorAccountSearchResult {
   homePageLink: string;
   manageAccountLink: string;
   showLinks: boolean;
+  joinState: JoinState;
 }
 
 /**
- * Search results for students from the Admin endpoint.
+ * The typings for the student account search result.
  */
 export interface StudentAccountSearchResult extends InstructorAccountSearchResult {
   section: string;
@@ -204,6 +240,6 @@ export interface StudentAccountSearchResult extends InstructorAccountSearchResul
   comments: string;
   recordsPageLink: string;
   openSessions: { [index: string]: string };
-  closedSessions: { [index: string]: string };
+  notOpenSessions: { [index: string]: string };
   publishedSessions: { [index: string]: string };
 }
