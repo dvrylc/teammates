@@ -118,7 +118,7 @@ export class SearchService {
         team: '',
         section: '',
         openSessions: {},
-        notOpenSessions: {},
+        closedSessions: {},
         publishedSessions: {},
         courseId: '',
         courseName: '',
@@ -240,6 +240,6 @@ export interface StudentAccountSearchResult extends InstructorAccountSearchResul
   comments: string;
   recordsPageLink: string;
   openSessions: { [index: string]: string };
-  notOpenSessions: { [index: string]: string };
+  closedSessions: { [index: string]: string };
   publishedSessions: { [index: string]: string };
 }
