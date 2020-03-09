@@ -14,6 +14,7 @@ import teammates.common.exception.UnauthorizedAccessException;
 import teammates.common.util.Config;
 import teammates.common.util.Const;
 import teammates.common.util.StringHelper;
+import teammates.ui.webapi.output.SearchLinksResult;
 import teammates.ui.webapi.output.SearchLinksInstructorData;
 import teammates.ui.webapi.output.SearchLinksResult;
 import teammates.ui.webapi.output.SearchLinksStudentData;
