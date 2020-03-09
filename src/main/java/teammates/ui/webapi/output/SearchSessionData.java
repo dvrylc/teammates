@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Output format for a student's session data.
+ * Represents a Sessions search result.
  */
 public class SearchSessionData extends ApiOutput {
     private final Map<String, String> openSessions = new HashMap<>();

@@ -3,7 +3,7 @@ package teammates.ui.webapi.output;
 import java.util.Map;
 
 /**
- * Output format for session search result.
+ * Contains Sessions search results.
  */
 public class SearchSessionsResult extends ApiOutput {
     private final Map<String, SearchSessionData> sessions;
