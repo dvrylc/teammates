@@ -5,12 +5,14 @@ import {
   JoinState,
   SearchCourse,
   SearchCoursesResult,
+  SearchInstructor,
   SearchInstructorsResult,
   SearchLinksInstructor,
   SearchLinksResult,
   SearchLinksStudent,
   SearchSession,
   SearchSessionsResult,
+  SearchStudent,
   SearchStudentsResult,
 } from '../types/api-output';
 import { HttpRequestService } from './http-request.service';
@@ -217,29 +219,11 @@ export interface AdminSearchResult {
 /**
  * The typings for the instructor account search result.
  */
-export interface InstructorAccountSearchResult {
-  name: string;
-  email: string;
-  googleId: string;
-  courseId: string;
-  courseName: string;
-  institute: string;
-  courseJoinLink: string;
-  homePageLink: string;
-  manageAccountLink: string;
-  showLinks: boolean;
-  joinState: JoinState;
-}
+export type InstructorAccountSearchResult =
+  SearchInstructor & SearchLinksInstructor & SearchCourse;
 
 /**
  * The typings for the student account search result.
  */
-export interface StudentAccountSearchResult extends InstructorAccountSearchResult {
-  section: string;
-  team: string;
-  comments: string;
-  recordsPageLink: string;
-  openSessions: { [index: string]: string };
-  closedSessions: { [index: string]: string };
-  publishedSessions: { [index: string]: string };
-}
+export type StudentAccountSearchResult =
+  SearchStudent & SearchLinksStudent & SearchCourse & SearchSession;
