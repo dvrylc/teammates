@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpRequestService } from './http-request.service';
-import { ResourceEndpoints } from '../types/api-endpoints';
-import {
-  JoinState,
-  SearchStudentsResult,
-  SearchStudent,
-} from '../types/api-output';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ResourceEndpoints } from '../types/api-endpoints';
+import { InstructorPrivilege, JoinState, SearchStudent, SearchStudentsResult  } from '../types/api-output';
+import { HttpRequestService } from './http-request.service';
 
 /**
  * Handles the logic for search.
@@ -47,37 +43,27 @@ export class SearchService {
       new Set(students.map((s: SearchStudent) => s.courseId)),
     );
     const coursesWithSections: InstructorSearchResultCourse[] = distinctCourses.map(
-      (c: string) => ({
-        courseId: c,
+      (courseId: string) => ({
+        courseId,
         sections: Array.from(
           new Set(
             students
-              .filter((s: SearchStudent) => s.courseId === c)
+              .filter((s: SearchStudent) => s.courseId === courseId)
               .map((s: SearchStudent) => s.section),
           ),
-        ).map((s: string) => ({
-          sectionName: s,
+        ).map((sectionName: string) => ({
+          sectionName,
           isAllowedtoViewStudentInSection: false,
           isAllowedToModifyStudent: false,
           students: students
-            .filter((s: SearchStudent) => s.courseId === c)
+            .filter((s: SearchStudent) => s.courseId === courseId && s.section === sectionName)
             .map((s: SearchStudent) =>
-              (({
-                name,
-                email,
-                joinState: status,
-                team,
-              }): {
-                name: string;
-                email: string;
-                status: JoinState;
-                team: string;
-              } => ({
-                name,
-                email,
-                status,
-                team,
-              }))(s),
+              ({
+                name: s.name,
+                email: s.email,
+                status: s.joinState,
+                team: s.team,
+              }),
             ),
         })),
       }),
@@ -96,7 +82,7 @@ export class SearchService {
             courseid: course.courseId,
             sectionname: section.sectionName,
           })
-          .subscribe(res => {
+          .subscribe((res: InstructorPrivilege): void => {
             section.isAllowedtoViewStudentInSection =
               res.canViewStudentInSections;
             section.isAllowedToModifyStudent = res.canModifyStudent;
@@ -110,10 +96,16 @@ export class SearchService {
   }
 }
 
+/**
+ * The typings for the response object returned by the instructor search service.
+ */
 export interface InstructorSearchResult {
   searchStudentsTables: InstructorSearchResultCourse[];
 }
 
+/**
+ * The typings for a course in the instructor search result.
+ */
 export interface InstructorSearchResultCourse {
   courseId: string;
   sections: InstructorSearchResultSection[];

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { LoadingBarService } from '../../../services/loading-bar.service';
+import { InstructorSearchResult, InstructorSearchResultCourse, SearchService } from '../../../services/search.service';
 import { StatusMessageService } from '../../../services/status-message.service';
 import { ErrorMessageOutput } from '../../error-message-output';
 import { StudentListSectionData } from '../student-list/student-list-section-data';
-import { InstructorSearchResult, InstructorSearchResultCourse, SearchService } from '../../../services/search.service';
 
 /**
  * Data object for communciation with the child student result component
