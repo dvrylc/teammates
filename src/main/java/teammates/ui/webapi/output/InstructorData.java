@@ -19,6 +19,10 @@ public class InstructorData extends ApiOutput {
     @Nullable
     private InstructorPermissionRole role;
     private JoinState joinState;
+    @Nullable
+    private String key;
+    @Nullable
+    private String institute;
 
     public InstructorData(InstructorAttributes instructorAttributes) {
         this.googleId = instructorAttributes.getGoogleId();
@@ -83,6 +87,22 @@ public class InstructorData extends ApiOutput {
 
     public void setJoinState(JoinState joinState) {
         this.joinState = joinState;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
     }
 
     /**
